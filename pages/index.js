@@ -4,13 +4,17 @@ import getPosts from '@utils/getPosts';
 
 const Index = ({ posts, title, description, ...props }) => {
   return (
-    <Layout pageTitle={title} description={description}>
-      <h1 className="title">Welcome to my blog!</h1>
-      <p className="description">This is my blog, yada, yada, yada...</p>
-      <main>
-        <PostList posts={posts} />
-      </main>
-    </Layout>
+    <>
+      <Layout pageTitle={title} description={description}>
+        <h1 className="title">Welcome to my blog!</h1>
+        <p className="description">This is my blog, yada, yada, yada...</p>
+        <main>
+          <PostList posts={posts} />
+        </main>
+      </Layout>
+      <style jsx>
+      </style>
+    </>
   );
 }
 

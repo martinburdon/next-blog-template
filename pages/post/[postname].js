@@ -5,14 +5,24 @@ import ReactMarkdown from 'react-markdown';
 import Layout from '@components/Layout';
 import getSlugs from '@utils/getSlugs';
 
-export default function BlogPost({ title, description, frontmatter, markdownBody }) {
-  if (!frontmatter) return <></>
+export default function BlogPost({
+  title,
+  description,
+  frontmatter,
+  markdownBody
+}) {
+  if (!frontmatter) return <></>;
+
+  const {
+    metaDescription = description,
+    metaTitle = title
+  } = frontmatter;
 
   return (
-    <Layout pageTitle={`${title} | ${frontmatter.title}`} description={description}>
-      <Link href="/">
-        <a>Back to post list</a>
-      </Link>
+    <Layout
+      pageTitle={metaTitle}
+      description={metaDescription}
+    >
       <article>
         <h1>{frontmatter.title}</h1>
         {frontmatter.banner && (
@@ -22,6 +32,8 @@ export default function BlogPost({ title, description, frontmatter, markdownBody
             alt={frontmatter.title}
           />
         )}
+        <p>{frontmatter.author}</p>
+        <p>{frontmatter.date}</p>
         <div>
           <ReactMarkdown source={markdownBody} />
         </div>

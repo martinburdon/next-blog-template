@@ -10,11 +10,15 @@
     "export": "next export"
   },
   "dependencies": {
+    "firebase": "^7.18.0",
     "gray-matter": "^4.0.2",
     "next": "9.4.4",
     "raw-loader": "^4.0.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-markdown": "^4.3.1"
+  },
+  "devDependencies": {
+    "react-hook-form": "^6.4.0"
   }
 }

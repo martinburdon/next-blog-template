@@ -7,8 +7,13 @@ export default function Header() {
         <nav className="nav">
           <ul>
             <li>
-              <Link href="/">
-                <a>My Blog</a>
+              <Link href="/register">
+                <a>Register</a>
+              </Link>
+            </li>
+            <li>
+              <Link href="/login">
+                <a>Log in</a>
               </Link>
             </li>
             <li>

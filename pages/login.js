@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '../utils/auth';
 import { useRouter } from 'next/router';
 
-export default function Login({ title, description, ...props }) {
+const Login = ({ title, description, ...props }) => {
   const { register, handleSubmit, errors } = useForm();
 
   const auth = useAuth();
@@ -60,6 +60,8 @@ export default function Login({ title, description, ...props }) {
     </>
   )
 }
+
+export default Login;
 
 export async function getStaticProps() {
   const configData = await import(`../siteconfig.json`)

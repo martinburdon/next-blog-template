@@ -29,6 +29,7 @@ export const useAuth = () => {
 
 function useProvideAuth() {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true)
 
   const login = (email, password) => {
     return firebase
@@ -66,6 +67,8 @@ function useProvideAuth() {
       } else {
         setUser(false);
       };
+
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
@@ -73,6 +76,7 @@ function useProvideAuth() {
 
   return {
     userId: user && user.uid,
+    isLoading,
     login,
     register,
     logout

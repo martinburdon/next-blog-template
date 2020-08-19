@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/database';
 
 // import prod from '../.firebase.prod.json';
 
@@ -41,11 +42,13 @@ function useProvideAuth() {
       });
   }
 
-  const register = (email, password) => {
+  const register = (email, password, username) => {
     return firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(({ user }) => {
+        // Create user in Realtime DB after created in Firebase internal auth DB
+        firebase.database().ref(`users/${user.uid}`).set({ email, username });
         setUser(user);
         return user;
       });
@@ -63,7 +66,16 @@ function useProvideAuth() {
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setUser(user);
+        // Query Realtime DB to get our custom user object
+        firebase.database().ref(`users/${user.uid}`).once('value', (snap) => {
+          // Combine our custom user data with `uid` from the auth DB
+          const userData = {
+            ...snap.val(),
+            uid: user.uid
+          };
+
+          setUser(user);
+        });
       } else {
         setUser(false);
       };

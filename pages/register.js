@@ -9,8 +9,8 @@ export default function Register({ title, description, ...props }) {
   const auth = useAuth();
   const router = useRouter();
 
-  const onSubmit = ({ email, password }) => {
-    auth.register(email, password)
+  const onSubmit = ({ email, password, username }) => {
+    auth.register(email, password, username)
       .then(() => {
         console.log(':: success reg');
         router.push('/');
@@ -25,9 +25,22 @@ export default function Register({ title, description, ...props }) {
       <Layout pageTitle={`${title} | Register`} description={description}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label>Email</label>
+            <label>Username</label>
             <input
               autoFocus
+              name="username"
+              ref={register({
+                required: "Please enter a username"
+              })}
+              placeholder="michaelscarn23"
+            >
+            </input>
+            <p>{errors.username && errors.username.message}</p>
+          </div>
+
+          <div>
+            <label>Email</label>
+            <input
               name="email"
               ref={register({
                 required: "Please enter your email"

@@ -11,12 +11,11 @@ export default function Register({ title, description, ...props }) {
 
   const onSubmit = ({ email, password, username }) => {
     auth.register(email, password, username)
-      .then(() => {
-        console.log(':: success reg');
-        router.push('/');
+      .then(({ message, username }) => {
+        router.push(`/${username}`);
       })
-      .catch(error => {
-        console.log(':: error ');
+      .catch(({ message }) => {
+        console.log(':: error ', message);
       });
   };
 

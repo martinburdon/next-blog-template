@@ -3,9 +3,11 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 
+import { createUser, propertyExists } from '../utils/dbQueries';
+
 // import prod from '../.firebase.prod.json';
 
-var firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyBSl2RHPW4r5CVbfq7XbbQ4u-4GHCErAco",
   authDomain: "my-links-94d18.firebaseapp.com",
   databaseURL: "https://my-links-94d18.firebaseio.com",
@@ -42,16 +44,28 @@ function useProvideAuth() {
       });
   }
 
-  const register = (email, password, username) => {
-    return firebase
+  const register = async (email, password, username) => {
+    const usernameExists = await propertyExists('username', username);
+    if (usernameExists) throw Error('username_exists');
+
+    const emailExists = await propertyExists('email', email);
+    if (emailExists) throw Error('email_exists');
+
+    // TODO: Error handling
+    const { user } = await firebase
       .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(({ user }) => {
-        // Create user in Realtime DB after created in Firebase internal auth DB
-        firebase.database().ref(`users/${user.uid}`).set({ email, username });
-        setUser(user);
-        return user;
-      });
+      .createUserWithEmailAndPassword(email, password);
+
+    // TODO: Error handling
+    // Create user in Realtime DB after created in Firebase internal auth DB
+    await createUser(user.uid, email, username);
+
+    setUser(user);
+
+    return {
+      username,
+      message: 'reg_success'
+    };
   }
 
   const logout = () => {

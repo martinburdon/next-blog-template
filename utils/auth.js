@@ -80,13 +80,15 @@ function useProvideAuth() {
     }
   }
 
-  const logout = () => {
-    return firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        setUser(false);
-      });
+  const logout = async () => {
+    try {
+      await firebase.auth().signOut();
+      setUser(false);
+    } catch (e) {
+      // Firebase returns a `code`
+      const msg = e.code || e.message;
+      throw Error(msg);
+    }
   }
 
   useEffect(() => {

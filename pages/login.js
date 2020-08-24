@@ -9,15 +9,13 @@ const Login = ({ title, description, ...props }) => {
   const auth = useAuth();
   const router = useRouter();
 
-  const onSubmit = ({ email, password }) => {
-    auth.login(email, password)
-      .then(() => {
-        console.log(':: success login');
-        router.push('/');
-      })
-      .catch(error => {
-        console.log(':: error login ', error);
-      });
+  const onSubmit = async ({ email, password }) => {
+    try {
+      const response = await auth.login(email, password);
+      router.push('/');
+    } catch (e) {
+      console.log(':: login error 2 ', e.message);
+    }
   }
 
   return (

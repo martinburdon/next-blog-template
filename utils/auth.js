@@ -34,14 +34,22 @@ function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true)
 
-  const login = (email, password) => {
-    return firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(({ user }) => {
-        setUser(user);
-        return user;
-      });
+  const login = async (email, password) => {
+    try {
+      const response = await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+
+      setUser(response.user);
+
+      return {
+        message: 'login_success'
+      };
+    } catch (e) {
+      // Firebase returns a `code`
+      const msg = e.code || e.message;
+      throw Error(msg);
+    }
   }
 
   const register = async (email, password, username) => {

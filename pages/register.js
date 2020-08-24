@@ -9,14 +9,13 @@ export default function Register({ title, description, ...props }) {
   const auth = useAuth();
   const router = useRouter();
 
-  const onSubmit = ({ email, password, username }) => {
-    auth.register(email, password, username)
-      .then(({ message, username }) => {
-        router.push(`/${username}`);
-      })
-      .catch(({ message }) => {
-        console.log(':: error ', message);
-      });
+  const onSubmit = async ({ email, password, username }) => {
+    try {
+      const response = await auth.register(email, password, username);
+      router.push(`/${response.username}`);
+    } catch (e) {
+      console.log(':: reg error ', e.message);
+    }
   };
 
   return (

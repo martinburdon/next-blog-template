@@ -34,16 +34,14 @@ export const getUserData = async (username) => {
  *  Create a new user using UID from auth DB
  */
 export const createUser = async (uid, email, username) => {
-  const snap = await firebase
-    .database()
-    .ref(`users/${uid}`)
-    .set({ email, username })
-    .then(() => {
-      console.log(':: user created ');
-    })
-    .catch((error) => {
-      console.log(':: error ', error);
-    });
+  try {
+    await firebase
+      .database()
+      .ref(`users/${uid}`)
+      .set({ email, username });
+  } catch ({ message = 'error/generic' }) {
+    throw Error(message);
+  }
 };
 
 /**

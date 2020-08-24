@@ -45,27 +45,31 @@ function useProvideAuth() {
   }
 
   const register = async (email, password, username) => {
-    const usernameExists = await propertyExists('username', username);
-    if (usernameExists) throw Error('username_exists');
+    try {
+      const usernameExists = await propertyExists('username', username);
+      if (usernameExists) throw Error('username_exists');
 
-    const emailExists = await propertyExists('email', email);
-    if (emailExists) throw Error('email_exists');
+      const emailExists = await propertyExists('email', email);
+      if (emailExists) throw Error('email_exists');
 
-    // TODO: Error handling
-    const { user } = await firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password);
+      const response = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
 
-    // TODO: Error handling
-    // Create user in Realtime DB after created in Firebase internal auth DB
-    await createUser(user.uid, email, username);
+      // Create user in Realtime DB after created in Firebase internal auth DB
+      await createUser(response.user.uid, email, username);
 
-    setUser(user);
+      setUser(response.user);
 
-    return {
-      username,
-      message: 'reg_success'
-    };
+      return {
+        username,
+        message: 'reg_success'
+      };
+    } catch (e) {
+      // Firebase returns a `code`
+      const msg = e.code || e.message;
+      throw Error(msg);
+    }
   }
 
   const logout = () => {

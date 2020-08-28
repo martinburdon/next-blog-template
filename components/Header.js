@@ -9,6 +9,16 @@ export default function Header() {
   const unauthedNav = (
     <>
       <li>
+        <Link href="/martin">
+          <a>Martin</a>
+        </Link>
+      </li>
+      <li>
+        <Link href="/martin2">
+          <a>Martin2</a>
+        </Link>
+      </li>
+      <li>
         <Link href="/register">
           <a>Register</a>
         </Link>
@@ -23,6 +33,16 @@ export default function Header() {
 
   const authedNav = (
     <>
+      <li>
+        <Link href="/martin">
+          <a>Martin</a>
+        </Link>
+      </li>
+      <li>
+        <Link href="/martin2">
+          <a>Martin2</a>
+        </Link>
+      </li>
       <li>
         <Link href="/account">
           <a>Account</a>

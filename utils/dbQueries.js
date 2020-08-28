@@ -2,6 +2,7 @@
  *  Custom queries for use with the Realtime Database
  */
 
+import { useAuth } from '../utils/auth';
 import * as firebase from 'firebase/app';
 
 /**
@@ -15,18 +16,19 @@ export const getUserData = async (username) => {
     .equalTo(username)
     .once('value');
 
-  let key = null;
-  let user = null;
+  let uid = null;
+  let userData = {};
 
   if (snap.exists()) {
-    const res = snap.val();
-    key = Object.keys(res)[0];
-    user = res[key].username;
+    const data = snap.val();
+    uid = Object.keys(data)[0];
+    userData = data[uid];
   }
 
   return {
-    isValidUser: !!key,
-    username: user
+    isValidUser: !!uid,
+    uid,
+    ...userData
   }
 };
 
@@ -43,6 +45,45 @@ export const createUser = async (uid, email, username) => {
     throw Error(message);
   }
 };
+
+export const addLink = async (uid, label, link) => {
+  try {
+    await firebase
+      .database()
+      .ref(`users/${uid}/links`)
+      .push({
+        label,
+        link
+      })
+  } catch (e) {
+    console.log(':: e ', e);
+    throw Error('uh-oh!');
+  }
+}
+
+export const listenToChanges = async (uid, setLinks) => {
+  console.log(':: listening ', uid);
+
+  firebase
+    .database()
+    .ref(`users/${uid}/links`)
+    .on('value', (snapshot) => {
+      const data = snapshot.val() || {};
+      const list = Object.keys(data).map(key => ({
+        key,
+        ...data[key]
+      }));
+      console.log(':: list ', list);
+      setLinks(list);
+    });
+
+  // firebase
+  //   .database()
+  //   .ref(`users/${uid}/links`)
+  //   .on('child_added', (snapshot) => {
+  //     console.log(':: updated ', snapshot.val());
+  //   });
+}
 
 /**
  *  Check for a property existing somewhere in the DB
